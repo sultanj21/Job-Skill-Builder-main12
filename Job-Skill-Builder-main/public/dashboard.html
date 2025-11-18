@@ -5,18 +5,24 @@
     <title>Dashboard – Pathway</title>
     <link rel="stylesheet" href="style.css" />
 </head>
+
 <body class="page dashboard-page">
+
 <header class="top-bar top-bar--app">
     <div class="top-left">
         <div class="logo">Pathway</div>
+
+        <!-- TOP NAV -->
         <nav class="top-nav">
             <a href="/dashboard" class="top-link active">Dashboard</a>
             <a href="/jobs" class="top-link">Jobs</a>
             <a href="/elevator" class="top-link">Elevator Coach</a>
             <a href="/scheduler" class="top-link">Scheduler</a>
             <a href="/resume" class="top-link">Resume AI</a>
+            <a href="/skills" class="top-link">Skills Coach</a>
         </nav>
     </div>
+
     <div class="top-right">
         <div class="top-user">
             <div class="top-user-avatar">
@@ -31,8 +37,10 @@
     </div>
 </header>
 
+<!-- MAIN LAYOUT -->
 <main class="dashboard-shell pro-layout">
-    <!-- LEFT: MINI DASHBOARD / SIDE NAV -->
+
+    <!-- SIDE NAV -->
     <aside class="dashboard-sidebar">
         <div class="sidebar-profile">
             <div class="sidebar-avatar">
@@ -48,69 +56,49 @@
         <div class="sidebar-section">
             <p class="sidebar-label">Workspace</p>
             <nav class="sidebar-nav">
-                <button class="sidebar-tab active" data-tab="overview">
-                    Overview
-                </button>
-                <button class="sidebar-tab" data-tab="personal">
-                    Personal Info
-                </button>
-                <button class="sidebar-tab" data-tab="resume">
-                    Resume
-                </button>
-                <button class="sidebar-tab" data-tab="photo">
-                    Profile Photo
-                </button>
-                <button class="sidebar-tab" data-tab="account">
-                    Account
-                </button>
+                <button class="sidebar-tab active" data-tab="overview">Overview</button>
+                <button class="sidebar-tab" data-tab="personal">Personal Info</button>
+                <button class="sidebar-tab" data-tab="resume">Resume</button>
+                <button class="sidebar-tab" data-tab="photo">Profile Photo</button>
+                <button class="sidebar-tab" data-tab="account">Account</button>
             </nav>
         </div>
 
         <div class="sidebar-section">
             <p class="sidebar-label">Quick actions</p>
+
             <div class="quick-actions">
-                <button class="qa-btn" data-tab-jump="resume">
-                    Upload a resume
-                </button>
-                <a href="/resume" class="qa-btn qa-btn-link">
-                    Open resume reformatter
-                </a>
-                <button class="qa-btn" data-tab-jump="photo">
-                    Update profile photo
-                </button>
-                <button class="qa-btn" data-tab-jump="personal">
-                    Review personal info
-                </button>
-                <a href="/jobs" class="qa-btn qa-btn-link">
-                    Explore jobs
-                </a>
-                <a href="/elevator" class="qa-btn qa-btn-link">
-                    Practice elevator pitch
-                </a>
-                <a href="/scheduler" class="qa-btn qa-btn-link">
-                    Open scheduler
-                </a>
+                <button class="qa-btn" data-tab-jump="resume">Upload a resume</button>
+
+                <a href="/resume" class="qa-btn qa-btn-link">Open resume reformatter</a>
+
+                <!-- NEW SKILLS COACH QUICK LINK -->
+                <a href="/skills" class="qa-btn qa-btn-link">Open skills coach</a>
+
+                <button class="qa-btn" data-tab-jump="photo">Update profile photo</button>
+                <button class="qa-btn" data-tab-jump="personal">Review personal info</button>
+
+                <a href="/jobs" class="qa-btn qa-btn-link">Explore jobs</a>
+                <a href="/elevator" class="qa-btn qa-btn-link">Practice elevator pitch</a>
+                <a href="/scheduler" class="qa-btn qa-btn-link">Open scheduler</a>
             </div>
         </div>
     </aside>
 
-    <!-- CENTER: MAIN PANELS -->
+    <!-- MAIN CONTENT -->
     <section class="dashboard-main">
-        <!-- OVERVIEW TAB -->
+
+        <!-- OVERVIEW -->
         <div class="tab-panel active" id="tab-overview">
             <div class="grid grid-2 gap">
+
                 <div class="card">
                     <div class="card-header-row">
                         <div>
                             <h3>Welcome back</h3>
-                            <p class="muted small">
-                                This is your career hub. Keep your profile strong,
-                                and use your tools to stay job-ready.
-                            </p>
+                            <p class="muted small">Your career hub — stay job-ready.</p>
                         </div>
-                        <div class="badge badge-soft">
-                            Profile Strength
-                        </div>
+                        <div class="badge badge-soft">Profile Strength</div>
                     </div>
 
                     <div class="profile-completion">
@@ -118,15 +106,13 @@
                             <span id="completionLabel">Profile completeness</span>
                             <span id="completionPercent">0%</span>
                         </div>
+
                         <div class="completion-bar">
-                            <div
-                                    class="completion-fill"
-                                    id="completionFill"
-                            ></div>
+                            <div class="completion-fill" id="completionFill"></div>
                         </div>
+
                         <p class="muted x-small" id="completionHint">
-                            Fill in your education, address, and upload a resume
-                            to reach 100%.
+                            Fill out your details to reach 100%.
                         </p>
                     </div>
                 </div>
@@ -137,67 +123,41 @@
                         <div class="stat-pill">
                             <span class="stat-label">Applications</span>
                             <span class="stat-value">0</span>
-                            <span class="stat-sub muted x-small">
-                                Tracking coming soon
-                            </span>
+                            <span class="stat-sub muted x-small">Coming soon</span>
                         </div>
+
                         <div class="stat-pill">
                             <span class="stat-label">Saved jobs</span>
                             <span class="stat-value">0</span>
-                            <span class="stat-sub muted x-small">
-                                Use the jobs page to save postings
-                            </span>
+                            <span class="stat-sub muted x-small">Use Jobs page</span>
                         </div>
+
                         <div class="stat-pill">
                             <span class="stat-label">Resume</span>
-                            <span class="stat-value" id="statResume">
-                                Not uploaded
-                            </span>
-                            <span class="stat-sub muted x-small">
-                                Upload in the Resume tab
-                            </span>
+                            <span class="stat-value" id="statResume">Not uploaded</span>
+                            <span class="stat-sub muted x-small">Upload in Resume tab</span>
                         </div>
+
                         <div class="stat-pill">
                             <span class="stat-label">Member since</span>
-                            <span class="stat-value" id="statMemberSince">
-                                —
-                            </span>
-                            <span class="stat-sub muted x-small">
-                                Your Pathway account age
-                            </span>
+                            <span class="stat-value" id="statMemberSince">—</span>
+                            <span class="stat-sub muted x-small">Account age</span>
                         </div>
                     </div>
                 </div>
+
             </div>
 
             <div class="grid grid-2 gap">
                 <div class="card">
                     <h3>Profile overview</h3>
                     <div class="detail-grid">
-                        <div>
-                            <strong>Full Name:</strong>
-                            <span id="ovFullname"></span>
-                        </div>
-                        <div>
-                            <strong>Occupation:</strong>
-                            <span id="ovOccupation"></span>
-                        </div>
-                        <div>
-                            <strong>College:</strong>
-                            <span id="ovCollege"></span>
-                        </div>
-                        <div>
-                            <strong>Graduation Date:</strong>
-                            <span id="ovGradDate"></span>
-                        </div>
-                        <div>
-                            <strong>Location:</strong>
-                            <span id="ovLocation"></span>
-                        </div>
-                        <div>
-                            <strong>Birthday:</strong>
-                            <span id="ovBirthday"></span>
-                        </div>
+                        <div><strong>Full Name:</strong> <span id="ovFullname"></span></div>
+                        <div><strong>Occupation:</strong> <span id="ovOccupation"></span></div>
+                        <div><strong>College:</strong> <span id="ovCollege"></span></div>
+                        <div><strong>Graduation Date:</strong> <span id="ovGradDate"></span></div>
+                        <div><strong>Location:</strong> <span id="ovLocation"></span></div>
+                        <div><strong>Birthday:</strong> <span id="ovBirthday"></span></div>
                     </div>
                 </div>
 
@@ -207,74 +167,43 @@
                         <li>
                             <span class="dot dot-green"></span>
                             <div>
-                                <p class="activity-title">
-                                    Logged in to dashboard
-                                </p>
-                                <p class="activity-meta muted x-small">
-                                    Just now · Session active
-                                </p>
+                                <p class="activity-title">Logged in</p>
+                                <p class="activity-meta muted x-small">Just now</p>
                             </div>
                         </li>
+
                         <li>
                             <span class="dot dot-blue"></span>
                             <div>
-                                <p class="activity-title">
-                                    Create your first resume upload
-                                </p>
-                                <p class="activity-meta muted x-small">
-                                    Use the Resume tab to keep files handy
-                                </p>
+                                <p class="activity-title">Start Skills Coach</p>
+                                <p class="activity-meta muted x-small">Practice coding daily</p>
                             </div>
                         </li>
+
                         <li>
                             <span class="dot dot-gray"></span>
                             <div>
-                                <p class="activity-title">
-                                    Complete profile details
-                                </p>
-                                <p class="activity-meta muted x-small">
-                                    Fill in education and address to strengthen
-                                    your profile
-                                </p>
+                                <p class="activity-title">Keep profile updated</p>
                             </div>
                         </li>
                     </ul>
                 </div>
+
             </div>
         </div>
 
-        <!-- PERSONAL INFO TAB -->
+        <!-- PERSONAL INFO -->
         <div class="tab-panel" id="tab-personal">
             <div class="card">
                 <h3>Personal information</h3>
-                <p class="muted small">
-                    This information helps recruiters understand your background.
-                </p>
+
                 <div class="detail-grid">
-                    <div>
-                        <strong>First Name:</strong>
-                        <span id="pFirst"></span>
-                    </div>
-                    <div>
-                        <strong>Last Name:</strong>
-                        <span id="pLast"></span>
-                    </div>
-                    <div>
-                        <strong>Full Name:</strong>
-                        <span id="pFull"></span>
-                    </div>
-                    <div>
-                        <strong>Email:</strong>
-                        <span id="pEmail"></span>
-                    </div>
-                    <div>
-                        <strong>Birthday:</strong>
-                        <span id="pBirthday"></span>
-                    </div>
-                    <div>
-                        <strong>Occupation:</strong>
-                        <span id="pOccupation"></span>
-                    </div>
+                    <div><strong>First Name:</strong> <span id="pFirst"></span></div>
+                    <div><strong>Last Name:</strong> <span id="pLast"></span></div>
+                    <div><strong>Full Name:</strong> <span id="pFull"></span></div>
+                    <div><strong>Email:</strong> <span id="pEmail"></span></div>
+                    <div><strong>Birthday:</strong> <span id="pBirthday"></span></div>
+                    <div><strong>Occupation:</strong> <span id="pOccupation"></span></div>
                 </div>
             </div>
 
@@ -282,40 +211,19 @@
                 <div class="card">
                     <h3>Address</h3>
                     <div class="detail-grid">
-                        <div>
-                            <strong>Street:</strong>
-                            <span id="pStreet"></span>
-                        </div>
-                        <div>
-                            <strong>City:</strong>
-                            <span id="pCity"></span>
-                        </div>
-                        <div>
-                            <strong>State:</strong>
-                            <span id="pState"></span>
-                        </div>
-                        <div>
-                            <strong>ZIP:</strong>
-                            <span id="pZip"></span>
-                        </div>
+                        <div><strong>Street:</strong> <span id="pStreet"></span></div>
+                        <div><strong>City:</strong> <span id="pCity"></span></div>
+                        <div><strong>State:</strong> <span id="pState"></span></div>
+                        <div><strong>ZIP:</strong> <span id="pZip"></span></div>
                     </div>
                 </div>
 
                 <div class="card">
                     <h3>Education</h3>
                     <div class="detail-grid">
-                        <div>
-                            <strong>College:</strong>
-                            <span id="pCollege"></span>
-                        </div>
-                        <div>
-                            <strong>Certificate:</strong>
-                            <span id="pCertificate"></span>
-                        </div>
-                        <div>
-                            <strong>Graduation Date:</strong>
-                            <span id="pGradDate"></span>
-                        </div>
+                        <div><strong>College:</strong> <span id="pCollege"></span></div>
+                        <div><strong>Certificate:</strong> <span id="pCertificate"></span></div>
+                        <div><strong>Graduation Date:</strong> <span id="pGradDate"></span></div>
                     </div>
                 </div>
             </div>
@@ -323,39 +231,29 @@
 
         <!-- RESUME TAB -->
         <div class="tab-panel" id="tab-resume">
+
             <div class="card">
                 <h3>Resume upload</h3>
-                <p class="muted small">
-                    Keep your latest resume here so it’s always ready.
-                </p>
-                <form id="resumeForm" enctype="multipart/form-data" class="inline-form">
+
+                <form id="resumeForm" class="inline-form" enctype="multipart/form-data">
                     <div class="form-group">
-                        <label for="resumeFile">Choose a file</label>
-                        <input
-                                id="resumeFile"
-                                name="resume"
-                                type="file"
-                                accept=".pdf,.doc,.docx"
-                        />
+                        <label>Choose a file</label>
+                        <input id="resumeFile" name="resume" type="file" accept=".pdf,.doc,.docx">
                     </div>
-                    <button type="submit" class="btn-primary">
-                        Upload resume
-                    </button>
+
+                    <button type="submit" class="btn-primary">Upload resume</button>
                 </form>
-                <div
-                        id="resumeStatus"
-                        class="muted small"
-                        style="margin-top:0.75rem;"
-                ></div>
+
+                <div id="resumeStatus" class="muted small" style="margin-top:0.75rem;"></div>
             </div>
 
             <div class="card">
                 <h3>Resume tips</h3>
                 <ul class="tips-list">
-                    <li>Keep it to 1–2 pages with clear headings.</li>
-                    <li>Highlight measurable impact (numbers, results).</li>
-                    <li>Tailor your summary to the role you want.</li>
-                    <li>Make sure your contact information is correct.</li>
+                    <li>1–2 pages max</li>
+                    <li>Clear headings</li>
+                    <li>Use measurable results</li>
+                    <li>Tailor to each job (use Resume AI tool)</li>
                 </ul>
             </div>
         </div>
@@ -364,37 +262,23 @@
         <div class="tab-panel" id="tab-photo">
             <div class="card">
                 <h3>Profile photo</h3>
+
                 <div class="profile-photo-row">
                     <div class="profile-photo-preview">
-                        <img id="profilePhotoPreview" alt="Profile" />
+                        <img id="profilePhotoPreview">
                     </div>
+
                     <div class="profile-photo-controls">
-                        <p class="muted small">
-                            A clean, bright photo helps personalize your profile.
-                        </p>
-                        <form
-                                id="profilePicForm"
-                                enctype="multipart/form-data"
-                                class="inline-form"
-                        >
+                        <form id="profilePicForm" class="inline-form" enctype="multipart/form-data">
                             <div class="form-group">
-                                <label for="profilePicInput">Choose image</label>
-                                <input
-                                        id="profilePicInput"
-                                        name="profilePic"
-                                        type="file"
-                                        accept="image/*"
-                                />
+                                <label>Choose image</label>
+                                <input id="profilePicInput" type="file" name="profilePic" accept="image/*">
                             </div>
-                            <button type="submit" class="btn-primary">
-                                Upload photo
-                            </button>
+
+                            <button class="btn-primary">Upload photo</button>
                         </form>
-                        <div
-                                id="profilePicStatus"
-                                class="muted small"
-                                style="margin-top:0.75rem;"
-                        ></div>
+
+                        <div id="profilePicStatus" class="muted small" style="margin-top:0.75rem;"></div>
                     </div>
                 </div>
             </div>
@@ -404,79 +288,52 @@
         <div class="tab-panel" id="tab-account">
             <div class="card">
                 <h3>Account</h3>
+
                 <div class="detail-grid">
-                    <div>
-                        <strong>Email:</strong>
-                        <span id="accEmail"></span>
-                    </div>
-                    <div>
-                        <strong>Full Name:</strong>
-                        <span id="accFullname"></span>
-                    </div>
-                    <div>
-                        <strong>Member Since:</strong>
-                        <span id="accCreatedAt"></span>
-                    </div>
+                    <div><strong>Email:</strong> <span id="accEmail"></span></div>
+                    <div><strong>Full Name:</strong> <span id="accFullname"></span></div>
+                    <div><strong>Member Since:</strong> <span id="accCreatedAt"></span></div>
                 </div>
 
-                <div style="margin-top:1rem;">
-                    <button class="btn-outline" id="logoutBtn2">
-                        Log out of this device
-                    </button>
-                </div>
+                <button id="logoutBtn2" class="btn-outline" style="margin-top:1rem;">Logout</button>
             </div>
         </div>
+
     </section>
 
-    <!-- RIGHT: EXTRA UTILITIES -->
+    <!-- RIGHT SIDE -->
     <aside class="dashboard-right">
-        <div class="card">
-            <h3>Suggested roles</h3>
-            <ul class="job-suggest-list">
-                <li>
-                    <p class="job-title-sm">Junior Software Developer</p>
-                    <p class="muted x-small">
-                        SampleTech · Atlanta · Full-time
-                    </p>
-                </li>
-                <li>
-                    <p class="job-title-sm">IT Support Specialist</p>
-                    <p class="muted x-small">
-                        SupportCo · Hybrid · Entry-level
-                    </p>
-                </li>
-                <li>
-                    <p class="job-title-sm">Cybersecurity Intern</p>
-                    <p class="muted x-small">
-                        SecureNet · Remote · Internship
-                    </p>
-                </li>
-            </ul>
-            <a href="/jobs" class="link-inline small">
-                View more jobs →
-            </a>
-        </div>
 
         <div class="card">
             <h3>Your tools</h3>
+
             <ul class="tips-list small">
                 <li>
+                    <strong>Resume AI</strong><br />
+                    Tailor your resume to any job posting.
+                    <br />
+                    <a href="/resume" class="link-inline small">Open Resume AI →</a>
+                </li>
+
+                <li>
+                    <strong>Coding Skills Coach</strong><br />
+                    Get project ideas and practice paths based on your goals.
+                    <br />
+                    <a href="/skills" class="link-inline small">Open Skills Coach →</a>
+                </li>
+
+                <li>
                     <strong>Elevator Coach</strong><br />
-                    Upload a short pitch and get AI feedback on pacing, tone, and clarity.
+                    Practice your pitch with AI feedback.
                     <br />
                     <a href="/elevator" class="link-inline small">Open Elevator Coach →</a>
                 </li>
+
                 <li>
-                    <strong>Scheduler & reminders</strong><br />
-                    Create events and get email reminders 1 day and 1 hour before.
+                    <strong>Scheduler</strong><br />
+                    Create events and reminders.
                     <br />
                     <a href="/scheduler" class="link-inline small">Open Scheduler →</a>
-                </li>
-                <li>
-                    <strong>AI Resume Reformatter</strong><br />
-                    Tailor your resume to a job description and highlight the right skills.
-                    <br />
-                    <a href="/resume" class="link-inline small">Open Resume AI →</a>
                 </li>
             </ul>
         </div>
@@ -484,247 +341,172 @@
         <div class="card">
             <h3>Career tips</h3>
             <ul class="tips-list">
-                <li>Keep your LinkedIn and resume aligned.</li>
-                <li>Document projects and class work as experience.</li>
-                <li>Reach out to recruiters with a short, focused message.</li>
-                <li>Practice short “about me” introductions.</li>
+                <li>Make your LinkedIn match your resume.</li>
+                <li>Add class projects to your experience.</li>
+                <li>Keep practicing technical problems weekly.</li>
             </ul>
         </div>
+
     </aside>
+
 </main>
 
 <script src="app.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", async () => {
-        // Logout buttons
-        document.getElementById("logoutBtn").addEventListener("click", () => {
-            AppUtils.handleLogout();
-        });
-        document.getElementById("logoutBtn2").addEventListener("click", () => {
-            AppUtils.handleLogout();
-        });
 
-        // Tab switching
+<script>
+    /*
+      Dashboard JS — loads user info + handles resume/photo uploads
+      This matches the server.js provided earlier.
+    */
+    document.addEventListener("DOMContentLoaded", async () => {
+
+        // Logout buttons
+        document.getElementById("logoutBtn").onclick =
+            document.getElementById("logoutBtn2").onclick =
+                () => AppUtils.handleLogout();
+
+        // Tab controls
         const tabButtons = document.querySelectorAll(".sidebar-tab");
         const tabPanels = document.querySelectorAll(".tab-panel");
 
-        function activateTab(tab) {
-            tabButtons.forEach((b) => {
-                b.classList.toggle("active", b.dataset.tab === tab);
-            });
-            tabPanels.forEach((panel) => {
-                panel.classList.toggle("active", panel.id === "tab-" + tab);
-            });
+        function showTab(tab) {
+            tabButtons.forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+            tabPanels.forEach(p => p.classList.toggle("active", p.id === "tab-" + tab));
         }
 
-        tabButtons.forEach((btn) => {
-            btn.addEventListener("click", () => {
-                activateTab(btn.dataset.tab);
-            });
+        tabButtons.forEach(btn => {
+            btn.addEventListener("click", () => showTab(btn.dataset.tab));
         });
 
-        // Quick actions jumping to tabs
-        document.querySelectorAll("[data-tab-jump]").forEach((el) => {
-            el.addEventListener("click", () => {
-                const tab = el.getAttribute("data-tab-jump");
-                activateTab(tab);
-            });
+        document.querySelectorAll("[data-tab-jump]").forEach(btn => {
+            btn.addEventListener("click", () => showTab(btn.dataset.tab));
         });
 
-        // Load user data
-        let user = null;
+        // Load session user
+        let user;
         try {
             const res = await fetch("/api/me");
             const data = await res.json();
-            if (!data.success) {
-                AppUtils.showBanner("Please log in again.", "error");
-                window.location.href = "/login.html";
-                return;
-            }
+            if (!data.success) return (window.location.href = "/login.html");
             user = data.user;
-        } catch (err) {
-            console.error("Dashboard load error:", err);
-            AppUtils.showBanner("Server error. Try again.", "error");
-            return;
+        } catch {
+            return (window.location.href = "/login.html");
         }
 
-        const u = user;
+        // Fill UI
+        document.getElementById("topUserName").textContent = user.fullname;
+        document.getElementById("topUserTitle").textContent = user.occupation;
 
-        // Top bar
-        document.getElementById("topUserName").textContent = u.fullname || "";
-        document.getElementById("topUserTitle").textContent = u.occupation || "";
-        const initialsTop =
-            (u.firstname?.[0] || "").toUpperCase() +
-            (u.lastname?.[0] || "").toUpperCase();
-        document.getElementById("topAvatarInitials").textContent =
-            initialsTop || "U";
-
-        // Sidebar
-        document.getElementById("sidebarName").textContent = u.fullname || "";
-        document.getElementById("sidebarEmail").textContent = u.email || "";
         const initials =
-            (u.firstname?.[0] || "").toUpperCase() +
-            (u.lastname?.[0] || "").toUpperCase();
-        document.getElementById("sidebarInitials").textContent =
-            initials || "U";
+            (user.firstname?.[0] || "U").toUpperCase() +
+            (user.lastname?.[0] || "U").toUpperCase();
 
-        const defaultPic = "https://via.placeholder.com/96?text=U";
-        const profilePath =
-            u.profilepicpath && u.profilepicpath.trim()
-                ? u.profilepicpath
-                : defaultPic;
-        document.getElementById("sidebarProfileImg").src = profilePath;
-        document.getElementById("profilePhotoPreview").src = profilePath;
+        document.getElementById("topAvatarInitials").textContent = initials;
+        document.getElementById("sidebarInitials").textContent = initials;
 
-        // Overview summary
-        document.getElementById("ovFullname").textContent = u.fullname || "";
-        document.getElementById("ovOccupation").textContent = u.occupation || "";
-        document.getElementById("ovCollege").textContent = u.college || "";
-        document.getElementById("ovGradDate").textContent = u.graddate || "";
-        document.getElementById("ovLocation").textContent = [u.city, u.state]
-            .filter(Boolean)
-            .join(", ");
-        document.getElementById("ovBirthday").textContent = u.birthday || "";
+        document.getElementById("sidebarName").textContent = user.fullname;
+        document.getElementById("sidebarEmail").textContent = user.email;
 
-        // Snapshot / stats
-        const created = u.created_at
-            ? new Date(u.created_at).toLocaleDateString()
-            : "—";
+        const pic = user.profilepicpath?.trim() || "https://via.placeholder.com/96?text=U";
+        document.getElementById("sidebarProfileImg").src = pic;
+        document.getElementById("profilePhotoPreview").src = pic;
+
+        document.getElementById("ovFullname").textContent = user.fullname;
+        document.getElementById("ovOccupation").textContent = user.occupation;
+        document.getElementById("ovCollege").textContent = user.college;
+        document.getElementById("ovGradDate").textContent = user.graddate;
+        document.getElementById("ovLocation").textContent = [user.city, user.state].filter(Boolean).join(", ");
+        document.getElementById("ovBirthday").textContent = user.birthday;
+
+        const created = user.created_at ? new Date(user.created_at).toLocaleDateString() : "—";
         document.getElementById("statMemberSince").textContent = created;
 
-        // Personal info tab
-        document.getElementById("pFirst").textContent = u.firstname || "";
-        document.getElementById("pLast").textContent = u.lastname || "";
-        document.getElementById("pFull").textContent = u.fullname || "";
-        document.getElementById("pEmail").textContent = u.email || "";
-        document.getElementById("pBirthday").textContent = u.birthday || "";
-        document.getElementById("pOccupation").textContent =
-            u.occupation || "";
-        document.getElementById("pStreet").textContent = u.street || "";
-        document.getElementById("pCity").textContent = u.city || "";
-        document.getElementById("pState").textContent = u.state || "";
-        document.getElementById("pZip").textContent = u.zip || "";
-        document.getElementById("pCollege").textContent = u.college || "";
-        document.getElementById("pCertificate").textContent =
-            u.certificate || "";
-        document.getElementById("pGradDate").textContent = u.graddate || "";
+        // Personal info
+        document.getElementById("pFirst").textContent = user.firstname;
+        document.getElementById("pLast").textContent = user.lastname;
+        document.getElementById("pFull").textContent = user.fullname;
+        document.getElementById("pEmail").textContent = user.email;
+        document.getElementById("pBirthday").textContent = user.birthday;
+        document.getElementById("pOccupation").textContent = user.occupation;
+        document.getElementById("pStreet").textContent = user.street;
+        document.getElementById("pCity").textContent = user.city;
+        document.getElementById("pState").textContent = user.state;
+        document.getElementById("pZip").textContent = user.zip;
+        document.getElementById("pCollege").textContent = user.college;
+        document.getElementById("pCertificate").textContent = user.certificate;
+        document.getElementById("pGradDate").textContent = user.graddate;
 
         // Account tab
-        document.getElementById("accEmail").textContent = u.email || "";
-        document.getElementById("accFullname").textContent = u.fullname || "";
+        document.getElementById("accEmail").textContent = user.email;
+        document.getElementById("accFullname").textContent = user.fullname;
         document.getElementById("accCreatedAt").textContent = created;
 
-        // Profile completion calculation
+        // Profile completion
         const fields = [
-            u.firstname,
-            u.lastname,
-            u.birthday,
-            u.email,
-            u.occupation,
-            u.city,
-            u.state,
-            u.college,
-            u.certificate,
-            u.graddate,
+            user.firstname,
+            user.lastname,
+            user.birthday,
+            user.email,
+            user.occupation,
+            user.city,
+            user.state,
+            user.college,
+            user.certificate,
+            user.graddate
         ];
-        const filled = fields.filter((v) => v && String(v).trim() !== "").length;
-        const total = fields.length + 1; // +1 reserved for resume upload later
-        let percent = Math.round((filled / total) * 100);
-        if (percent > 100) percent = 100;
-        if (percent < 0) percent = 0;
 
-        const completionFill = document.getElementById("completionFill");
-        const completionPercent = document.getElementById("completionPercent");
-        const completionHint = document.getElementById("completionHint");
-        completionFill.style.width = percent + "%";
-        completionPercent.textContent = percent + "%";
+        const filled = fields.filter(x => x && x.trim()).length;
+        const percent = Math.min(100, Math.round((filled / fields.length) * 100));
 
-        if (percent < 40) {
-            completionHint.textContent =
-                "Good start. Add more education and location details to strengthen your profile.";
-        } else if (percent < 80) {
-            completionHint.textContent =
-                "You’re almost there. Upload a resume and fill any missing fields to reach 100%.";
-        } else {
-            completionHint.textContent =
-                "Nice! Your profile looks strong. Keep your resume updated for new opportunities.";
-        }
+        document.getElementById("completionFill").style.width = percent + "%";
+        document.getElementById("completionPercent").textContent = percent + "%";
 
-        // Resume / profile-pic form handlers
+        // Resume upload
         const resumeForm = document.getElementById("resumeForm");
         const resumeStatus = document.getElementById("resumeStatus");
-        const statResume = document.getElementById("statResume");
 
-        resumeForm.addEventListener("submit", async (e) => {
+        resumeForm.addEventListener("submit", async e => {
             e.preventDefault();
-            resumeStatus.textContent = "";
-            const fileInput = document.getElementById("resumeFile");
-            if (!fileInput.files.length) {
-                resumeStatus.textContent = "Please select a file.";
-                return;
-            }
-            const formData = new FormData();
-            formData.append("resume", fileInput.files[0]);
+            const file = document.getElementById("resumeFile").files[0];
 
-            try {
-                const res = await fetch("/upload-resume", {
-                    method: "POST",
-                    body: formData,
-                });
-                const data = await res.json();
-                if (data.success) {
-                    resumeStatus.textContent =
-                        "Uploaded: " + (data.filename || "file");
-                    statResume.textContent = "Uploaded";
-                } else {
-                    resumeStatus.textContent =
-                        data.message || "Upload failed.";
-                }
-            } catch (err) {
-                console.error("Resume upload error:", err);
-                resumeStatus.textContent = "Server error.";
+            if (!file) return (resumeStatus.textContent = "Choose a file first.");
+
+            const formData = new FormData();
+            formData.append("resume", file);
+
+            const res = await fetch("/upload-resume", { method: "POST", body: formData });
+            const data = await res.json();
+
+            resumeStatus.textContent = data.success
+                ? "Uploaded: " + (data.filename || "file")
+                : data.message;
+        });
+
+        // Profile picture upload
+        const picForm = document.getElementById("profilePicForm");
+        const picStatus = document.getElementById("profilePicStatus");
+
+        picForm.addEventListener("submit", async e => {
+            e.preventDefault();
+            const file = document.getElementById("profilePicInput").files[0];
+            if (!file) return (picStatus.textContent = "Choose an image first.");
+
+            const formData = new FormData();
+            formData.append("profilePic", file);
+
+            const res = await fetch("/upload-profile-pic", { method: "POST", body: formData });
+            const data = await res.json();
+
+            picStatus.textContent = data.message;
+
+            if (data.success && data.path) {
+                document.getElementById("sidebarProfileImg").src = data.path;
+                document.getElementById("profilePhotoPreview").src = data.path;
             }
         });
 
-        const profilePicForm = document.getElementById("profilePicForm");
-        const profilePicStatus = document.getElementById("profilePicStatus");
-
-        profilePicForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            profilePicStatus.textContent = "";
-            const fileInput = document.getElementById("profilePicInput");
-            if (!fileInput.files.length) {
-                profilePicStatus.textContent = "Please select an image.";
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append("profilePic", fileInput.files[0]);
-
-            try {
-                const res = await fetch("/upload-profile-pic", {
-                    method: "POST",
-                    body: formData,
-                });
-                const data = await res.json();
-                if (data.success) {
-                    profilePicStatus.textContent =
-                        data.message || "Updated.";
-                    const newPath = data.path;
-                    document.getElementById("sidebarProfileImg").src =
-                        newPath;
-                    document.getElementById("profilePhotoPreview").src =
-                        newPath;
-                } else {
-                    profilePicStatus.textContent =
-                        data.message || "Upload failed.";
-                }
-            } catch (err) {
-                console.error("Profile pic upload error:", err);
-                profilePicStatus.textContent = "Server error.";
-            }
-        });
     });
 </script>
+
 </body>
 </html>

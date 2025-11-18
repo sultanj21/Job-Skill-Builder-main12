@@ -128,6 +128,11 @@ app.get("/scheduler", requireAuth, (req, res) => {
 // New AI Resume page
 app.get("/resume", requireAuth, (req, res) => {
     res.sendFile(path.join(__dirname, "public", "resume.html"));
+    // Skills Coach page
+    app.get("/skills", requireAuth, (req, res) => {
+        res.sendFile(path.join(__dirname, "public", "skills.html"));
+    });
+
 });
 
 // ---------- API: CURRENT USER (NO requireAuth HERE) ----------

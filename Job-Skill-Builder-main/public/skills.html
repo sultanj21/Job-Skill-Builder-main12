@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Coding Skills Coach | Pathway</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Use global styles + page-specific styles -->
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f3f4f6;
+      color: #111827;
+    }
+
+    .shell {
+      max-width: 900px;
+      margin: 24px auto;
+      padding: 16px;
+    }
+
+    .nav-back {
+      margin-bottom: 12px;
+    }
+
+    .nav-back a {
+      text-decoration: none;
+      color: #2563eb;
+      font-size: 0.9rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
+      padding: 20px;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 1.6rem;
+    }
+
+    p {
+      margin-top: 4px;
+      color: #4b5563;
+    }
+
+    .field {
+      margin-top: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+    }
+
+    .field textarea,
+    .field input,
+    .field select {
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      padding: 8px 10px;
+      font-size: 0.95rem;
+    }
+
+    .field small {
+      color: #6b7280;
+      font-size: 0.8rem;
+    }
+
+    .controls {
+      margin-top: 18px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 18px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .status {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-top: 8px;
+    }
+
+    .results {
+      margin-top: 24px;
+    }
+
+    .results h2 {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+    }
+
+    .results pre {
+      background: #f9fafb;
+      border-radius: 12px;
+      padding: 12px 14px;
+      white-space: pre-wrap;
+      font-size: 0.9rem;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+  <div class="nav-back">
+    <!-- FIXED: no .html, keeps session + requireAuth flow -->
+    <a href="/dashboard">&#8592; Back to dashboard</a>
+  </div>
+
+  <div class="card">
+    <h1>Coding Skills Coach</h1>
+    <p>
+      Describe the programming skills you want to improve, and we will suggest tailored
+      project ideas and/or problem sets to practice them.
+    </p>
+
+    <div class="field">
+      <label for="goalsInput">What do you want to improve?*</label>
+      <textarea
+              id="goalsInput"
+              rows="4"
+              placeholder="Examples: I want to get better at dynamic programming and graph algorithms for technical interviews; or building full-stack apps with React + Node; or writing cleaner object-oriented code in Java."
+      ></textarea>
+    </div>
+
+    <div class="field">
+      <label for="levelSelect">Your current level (optional)</label>
+      <select id="levelSelect">
+        <option value="">Select level</option>
+        <option value="beginner">Beginner</option>
+        <option value="intermediate">Intermediate</option>
+        <option value="advanced">Advanced</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="languagesInput">Preferred language(s) or stack (optional)</label>
+      <input
+              id="languagesInput"
+              type="text"
+              placeholder="e.g. Python, JavaScript/React, Java, C++, SQL"
+      />
+    </div>
+
+    <div class="field">
+      <label for="timeInput">Time available per week (optional)</label>
+      <input
+              id="timeInput"
+              type="text"
+              placeholder="e.g. 5 hours, 10–15 hours"
+      />
+    </div>
+
+    <div class="controls">
+      <button class="btn btn-secondary" id="clearBtn">Clear</button>
+      <button class="btn btn-primary" id="generateBtn">Generate Ideas</button>
+    </div>
+
+    <div class="status" id="statusMessage"></div>
+
+    <div class="results" id="results" style="display:none;">
+      <h2>Suggested Projects & Problems</h2>
+      <pre id="ideasBlock"></pre>
+    </div>
+  </div>
+</div>
+
+<script>
+  const goalsInput = document.getElementById("goalsInput");
+  const levelSelect = document.getElementById("levelSelect");
+  const languagesInput = document.getElementById("languagesInput");
+  const timeInput = document.getElementById("timeInput");
+  const clearBtn = document.getElementById("clearBtn");
+  const generateBtn = document.getElementById("generateBtn");
+  const statusMessage = document.getElementById("statusMessage");
+  const resultsDiv = document.getElementById("results");
+  const ideasBlock = document.getElementById("ideasBlock");
+
+  function setStatus(msg) {
+    statusMessage.textContent = msg || "";
+  }
+
+  function resetUI() {
+    goalsInput.value = "";
+    levelSelect.value = "";
+    languagesInput.value = "";
+    timeInput.value = "";
+    resultsDiv.style.display = "none";
+    ideasBlock.textContent = "";
+    setStatus("");
+  }
+
+  clearBtn.addEventListener("click", () => {
+    resetUI();
+  });
+
+  generateBtn.addEventListener("click", async () => {
+    const goals = goalsInput.value.trim();
+    const level = levelSelect.value;
+    const languages = languagesInput.value.trim();
+    const timePerWeek = timeInput.value.trim();
+
+    if (!goals) {
+      setStatus("Please describe what you want to improve first.");
+      return;
+    }
+
+    generateBtn.disabled = true;
+    clearBtn.disabled = true;
+    setStatus("Thinking up tailored project ideas...");
+
+    try {
+      const res = await fetch("/api/learning/recommend-projects", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          goals,
+          level,
+          languages,
+          timePerWeek,
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setStatus(
+                data.error ||
+                "Something went wrong while generating ideas. Please try again."
+        );
+        return;
+      }
+
+      setStatus("Here are some ideas you can work on next!");
+      ideasBlock.textContent = data.ideas || "(No ideas returned.)";
+      resultsDiv.style.display = "block";
+    } catch (err) {
+      console.error("Error calling project ideas API:", err);
+      setStatus("Network error while generating ideas. Please try again.");
+    } finally {
+      generateBtn.disabled = false;
+      clearBtn.disabled = false;
+    }
+  });
+
+  resetUI();
+</script>
+</body>
+</html>
