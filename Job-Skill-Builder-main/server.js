@@ -26,6 +26,25 @@ if (!supabaseUrl || !supabaseKey) {
 const supabase = createClient(supabaseUrl, supabaseKey);
 console.log("🔗 Supabase Dashboard:", supabaseUrl);
 
+// ---------- UPLOADS (MULTER) ----------
+const uploadsDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir);
+}
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, uploadsDir);
+    },
+    filename: (req, file, cb) => {
+        const userId = (req.session && req.session.user && req.session.user.id) || "anon";
+        const safeOriginal = file.originalname.replace(/[^\w.\-]/g, "_");
+        cb(null, `${userId}_${Date.now()}_${safeOriginal}`);
+    },
+});
+
+const upload = multer({ storage });
+
 // ---------- MIDDLEWARE ----------
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -42,8 +61,9 @@ app.use(
     })
 );
 
-// Static files (public contains html, css, js, uploads, etc.)
+// Static files (public) + uploads
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/uploads", express.static(uploadsDir));
 
 // ---------- AUTH MIDDLEWARE ----------
 function requireAuth(req, res, next) {
@@ -52,29 +72,6 @@ function requireAuth(req, res, next) {
     }
     next();
 }
-
-// ---------- FILE UPLOAD CONFIG (PROFILE PIC + RESUME) ----------
-const uploadDir = path.join(__dirname, "public", "uploads");
-
-// Make sure uploads folder exists (important on Render)
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname) || "";
-        // Use different base names for images vs resumes
-        const base =
-            file.fieldname === "profilePic" ? "profile" : "resume";
-        cb(null, `${base}-${Date.now()}${ext}`);
-    },
-});
-
-const upload = multer({ storage });
 
 // ---------- API ROUTES (scheduler + elevator) ----------
 app.use("/api", schedulerRoutes);
@@ -111,7 +108,7 @@ app.get("/register-college", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "register_college.html"));
 });
 
-// Dashboard + Jobs + Elevator + Scheduler (protected)
+// Dashboard + Jobs + Elevator + Scheduler + Resume (protected)
 app.get("/dashboard", requireAuth, (req, res) => {
     res.sendFile(path.join(__dirname, "public", "dashboard.html"));
 });
@@ -128,10 +125,14 @@ app.get("/scheduler", requireAuth, (req, res) => {
     res.sendFile(path.join(__dirname, "public", "scheduler.html"));
 });
 
-// ---------- API: CURRENT USER ----------
+// New AI Resume page
+app.get("/resume", requireAuth, (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "resume.html"));
+});
+
+// ---------- API: CURRENT USER (NO requireAuth HERE) ----------
 app.get("/api/me", async (req, res) => {
     try {
-        // If no session, just say not logged in in JSON
         if (!req.session.user) {
             return res.status(200).json({
                 success: false,
@@ -193,7 +194,6 @@ app.post("/register", async (req, res) => {
             gradDate,
         } = req.body;
 
-        // Basic validation
         if (
             !firstName ||
             !lastName ||
@@ -208,7 +208,6 @@ app.post("/register", async (req, res) => {
             });
         }
 
-        // Check if email already exists
         const { data: existing, error: existingErr } = await supabase
             .from("users")
             .select("id")
@@ -232,13 +231,13 @@ app.post("/register", async (req, res) => {
 
         const hashed = await bcrypt.hash(password, 10);
 
-        const { data: inserted, error: insertErr } = await supabase
+        const { error: insertErr } = await supabase
             .from("users")
             .insert({
                 firstname: firstName,
                 lastname: lastName,
                 fullname: `${firstName} ${lastName}`,
-                birthday, // YYYY-MM-DD string; Supabase will cast to date
+                birthday,
                 email,
                 occupation,
                 password_hash: hashed,
@@ -248,7 +247,7 @@ app.post("/register", async (req, res) => {
                 zip,
                 college,
                 certificate,
-                graddate: gradDate, // also date in DB
+                graddate: gradDate,
             })
             .select()
             .single();
@@ -341,7 +340,34 @@ app.post("/logout", (req, res) => {
     });
 });
 
-// ---------- API: UPLOAD PROFILE PICTURE ----------
+// ---------- FILE UPLOAD ENDPOINTS (Dashboard) ----------
+
+// Resume upload from dashboard "Resume" tab
+app.post("/upload-resume", requireAuth, upload.single("resume"), (req, res) => {
+    try {
+        if (!req.file) {
+            return res.json({
+                success: false,
+                message: "No file uploaded.",
+            });
+        }
+
+        // (Optional) You could store resume file info in DB later
+        return res.json({
+            success: true,
+            message: "Resume uploaded.",
+            filename: req.file.originalname,
+        });
+    } catch (err) {
+        console.error("/upload-resume error:", err);
+        return res.json({
+            success: false,
+            message: "Server error. Try again.",
+        });
+    }
+});
+
+// Profile picture upload from dashboard "Profile Photo" tab
 app.post(
     "/upload-profile-pic",
     requireAuth,
@@ -349,82 +375,106 @@ app.post(
     async (req, res) => {
         try {
             if (!req.file) {
-                return res
-                    .status(400)
-                    .json({ success: false, message: "No file uploaded." });
+                return res.json({
+                    success: false,
+                    message: "No image uploaded.",
+                });
             }
 
             const userId = req.session.user.id;
-            const filePath = `/uploads/${req.file.filename}`;
+            const relativePath = `/uploads/${path.basename(req.file.path)}`;
 
-            // Update user's profilepicpath in Supabase
-            const { data, error } = await supabase
+            const { error } = await supabase
                 .from("users")
-                .update({ profilepicpath: filePath })
-                .eq("id", userId)
-                .select()
-                .maybeSingle();
+                .update({ profilepicpath: relativePath })
+                .eq("id", userId);
 
             if (error) {
                 console.error("Supabase profile pic update error:", error);
-                return res.status(500).json({
+                return res.json({
                     success: false,
-                    message: "Database error updating profile picture.",
+                    message: "Could not save image path to database.",
                 });
             }
 
             return res.json({
                 success: true,
-                message: "Profile picture updated.",
-                path: filePath,
+                message: "Profile photo updated.",
+                path: relativePath,
             });
         } catch (err) {
-            console.error("Upload profile picture error:", err);
-            return res.status(500).json({
-                success: false,
-                message: "Server error while uploading profile picture.",
-            });
-        }
-    }
-);
-
-// ---------- API: UPLOAD RESUME ----------
-app.post(
-    "/upload-resume",
-    requireAuth,
-    upload.single("resume"),
-    async (req, res) => {
-        try {
-            if (!req.file) {
-                return res
-                    .status(400)
-                    .json({ success: false, message: "No file uploaded." });
-            }
-
-            const filePath = `/uploads/${req.file.filename}`;
-
-            // Optional: if you later add a "resumepath" column, you can store it like this:
-            // const userId = req.session.user.id;
-            // await supabase
-            //   .from("users")
-            //   .update({ resumepath: filePath })
-            //   .eq("id", userId);
-
+            console.error("/upload-profile-pic error:", err);
             return res.json({
-                success: true,
-                message: "Resume uploaded.",
-                path: filePath,
-                filename: req.file.originalname,
-            });
-        } catch (err) {
-            console.error("Upload resume error:", err);
-            return res.status(500).json({
                 success: false,
-                message: "Server error while uploading resume.",
+                message: "Server error. Try again.",
             });
         }
     }
 );
+
+// ---------- AI RESUME TOOL ENDPOINTS ----------
+
+// Upload + extract stub: used by resume.js (/api/upload)
+app.post("/api/upload", requireAuth, upload.single("resume"), (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({
+                message: "No resume file uploaded.",
+            });
+        }
+
+        // In a real version you'd parse the PDF/DOCX here.
+        // For now we just send a stub message back.
+        return res.json({
+            message: "Resume uploaded. Paste or edit the text in the box.",
+            resumeText: "",
+            skills: [],
+        });
+    } catch (err) {
+        console.error("/api/upload error:", err);
+        return res.status(500).json({
+            message: "Server error while processing resume.",
+        });
+    }
+});
+
+// AI resume reformatter stub: used by resume.js (/api/resume/reformatter)
+app.post("/api/resume/reformatter", requireAuth, async (req, res) => {
+    try {
+        const { resumeText, jobDescription } = req.body || {};
+
+        if (!resumeText || !jobDescription) {
+            return res.status(400).json({
+                message: "Please provide both resume text and job description.",
+            });
+        }
+
+        // Simple stub "AI" logic for now
+        const summary = `Tailored for this role, highlighting your key experience and skills mentioned in the job description.`;
+        const tailoredResume =
+            resumeText +
+            "\n\n---\nTailored for job description above. Make sure to double-check bullet points and dates.";
+
+        const emphasizedSkills = [];
+        const suggestions = [
+            "Move the most relevant experience to the top.",
+            "Add 2–3 bullets that mention technologies from the job posting.",
+            "Keep everything to 1–2 pages and use consistent bullet formatting.",
+        ];
+
+        return res.json({
+            summary,
+            tailoredResume,
+            emphasizedSkills,
+            suggestions,
+        });
+    } catch (err) {
+        console.error("/api/resume/reformatter error:", err);
+        return res.status(500).json({
+            message: "Server error while tailoring resume.",
+        });
+    }
+});
 
 // ---------- START SERVER ----------
 const PORT = process.env.PORT || 3000;
