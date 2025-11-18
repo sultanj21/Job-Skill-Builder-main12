@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Register – Pathway</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body class="page auth-page">
+<header class="top-bar">
+    <div class="logo">Pathway</div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="login.html" class="btn-outline">Login</a>
+    </nav>
+</header>
+
+<main class="auth-container">
+    <div class="auth-card">
+        <h2>Create your account</h2>
+        <p class="muted small">
+            One simple form – personal info, address, and education all in one place.
+        </p>
+
+        <div id="message" class="muted small" style="min-height: 1.2rem;"></div>
+
+        <form id="registerForm">
+            <!-- Personal info -->
+            <h3>Personal Information</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">First Name<span class="required">*</span></label>
+                    <input id="firstName" name="firstName" required />
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name<span class="required">*</span></label>
+                    <input id="lastName" name="lastName" required />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="birthday">Birthday<span class="required">*</span></label>
+                    <input id="birthday" name="birthday" type="date" required />
+                </div>
+                <div class="form-group">
+                    <label for="occupation">Occupation<span class="required">*</span></label>
+                    <input id="occupation" name="occupation" required />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email<span class="required">*</span></label>
+                <input id="email" name="email" type="email" required />
+            </div>
+
+            <!-- Password -->
+            <h3>Security</h3>
+            <div class="form-group">
+                <label for="password">Password<span class="required">*</span></label>
+                <div class="password-wrapper">
+                    <input
+                            id="password"
+                            name="password"
+                            type="password"
+                            autocomplete="new-password"
+                            required
+                    />
+                    <button type="button" id="togglePassword" class="password-toggle">
+                        Show
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password<span class="required">*</span></label>
+                <input
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        type="password"
+                        required
+                />
+            </div>
+
+            <!-- Address -->
+            <h3>Address</h3>
+            <div class="form-group">
+                <label for="street">Street</label>
+                <input id="street" name="street" />
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input id="city" name="city" />
+                </div>
+                <div class="form-group">
+                    <label for="state">State</label>
+                    <input id="state" name="state" />
+                </div>
+                <div class="form-group">
+                    <label for="zip">ZIP</label>
+                    <input id="zip" name="zip" />
+                </div>
+            </div>
+
+            <!-- Education -->
+            <h3>Education</h3>
+            <div class="form-group">
+                <label for="college">College</label>
+                <input id="college" name="college" />
+            </div>
+
+            <div class="form-group">
+                <label for="certificate">Certificate / Degree</label>
+                <input id="certificate" name="certificate" />
+            </div>
+
+            <div class="form-group">
+                <label for="gradDate">Graduation Date</label>
+                <input id="gradDate" name="gradDate" type="date" />
+            </div>
+
+            <div class="form-footer">
+                <button type="submit" class="btn-primary full-width">
+                    Create Account
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("registerForm");
+        const msgEl = document.getElementById("message");
+        const pwInput = document.getElementById("password");
+        const cpwInput = document.getElementById("confirmPassword");
+        const toggleBtn = document.getElementById("togglePassword");
+
+        // --- Show / hide password utility ---
+        toggleBtn.addEventListener("click", () => {
+            const isPassword = pwInput.type === "password";
+            pwInput.type = isPassword ? "text" : "password";
+            toggleBtn.textContent = isPassword ? "Hide" : "Show";
+        });
+
+        function showMessage(text, type) {
+            msgEl.textContent = text || "";
+            msgEl.style.color =
+                type === "error" ? "#fecaca" :
+                    type === "success" ? "#bbf7d0" :
+                        "#9ca3af";
+        }
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            showMessage("", "info");
+
+            const password = pwInput.value.trim();
+            const confirmPassword = cpwInput.value.trim();
+
+            if (password !== confirmPassword) {
+                showMessage("Passwords do not match.", "error");
+                return;
+            }
+
+            const formData = new FormData(form);
+            const payload = Object.fromEntries(formData.entries());
+
+            // Remove confirmPassword before sending
+            delete payload.confirmPassword;
+
+            try {
+                const res = await fetch("/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload),
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    showMessage(
+                        data.message || "Registration successful. Redirecting to login...",
+                        "success"
+                    );
+                    setTimeout(() => {
+                        window.location.href = "/login.html";
+                    }, 1000);
+                } else {
+                    showMessage(
+                        data.message || "Server error. Please try again.",
+                        "error"
+                    );
+                }
+            } catch (err) {
+                console.error("Register error:", err);
+                showMessage("Server error. Please try again.", "error");
+            }
+        });
+    });
+</script>
+</body>
+</html>

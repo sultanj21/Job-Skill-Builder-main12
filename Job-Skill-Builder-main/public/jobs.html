@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Jobs – Pathway</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body class="page">
+<header class="top-bar">
+    <div class="logo">Pathway</div>
+    <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="jobs.html">Jobs</a>
+        <button class="btn-outline" id="logoutBtn">Logout</button>
+    </nav>
+</header>
+
+<main class="jobs-layout">
+    <section class="card">
+        <h2>Job Board (placeholder)</h2>
+        <p class="muted">
+            Here you can later integrate real job feeds, saved jobs, and filters.
+        </p>
+        <ul class="job-list">
+            <li>
+                <h3>Junior Software Developer</h3>
+                <p class="muted small">
+                    Example Company · Atlanta, GA · Full-time
+                </p>
+            </li>
+            <li>
+                <h3>IT Support Specialist</h3>
+                <p class="muted small">
+                    Example Tech · Remote · Full-time
+                </p>
+            </li>
+        </ul>
+    </section>
+</main>
+
+<script src="app.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            AppUtils.handleLogout();
+        });
+    });
+</script>
+</body>
+</html>

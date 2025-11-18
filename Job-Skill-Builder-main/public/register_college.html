@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Register – Education</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body class="page auth-page">
+<header class="top-bar">
+    <div class="logo">Pathway</div>
+    <nav>
+        <a href="login.html">Login</a>
+    </nav>
+</header>
+
+<main class="auth-container">
+    <div class="auth-card">
+        <h2>Step 3 of 3 – Education</h2>
+        <form id="collegeForm">
+            <div class="form-group">
+                <label for="college">College</label>
+                <input id="college" name="college" />
+            </div>
+
+            <div class="form-group">
+                <label for="certificate">Certificate / Degree</label>
+                <input id="certificate" name="certificate" />
+            </div>
+
+            <div class="form-group">
+                <label for="gradDate">Graduation Date</label>
+                <input id="gradDate" name="gradDate" type="date" />
+            </div>
+
+            <div class="form-footer space-between">
+                <button type="button" class="btn-outline" id="backBtn">
+                    Back
+                </button>
+                <button type="submit" class="btn-primary">
+                    Finish & Register
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script src="app.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("collegeForm");
+
+        AppUtils.loadStepData("register_step_college", form);
+
+        document.getElementById("backBtn").addEventListener("click", () => {
+            AppUtils.saveStepData("register_step_college", form);
+            window.location.href = "register_address.html";
+        });
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            AppUtils.saveStepData("register_step_college", form);
+
+            const allData = AppUtils.collectAllRegistrationData();
+            if (!allData) {
+                AppUtils.showBanner("Missing registration data.", "error");
+                return;
+            }
+
+            // remove confirmPassword before sending to server
+            delete allData.confirmPassword;
+
+            try {
+                const res = await fetch("/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(allData),
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    AppUtils.showBanner(data.message, "success");
+                    sessionStorage.removeItem("register_step_personal");
+                    sessionStorage.removeItem("register_step_address");
+                    sessionStorage.removeItem("register_step_college");
+                    window.location.href = "/login.html";
+                } else {
+                    AppUtils.showBanner(
+                        data.message || "Server error. Try again.",
+                        "error"
+                    );
+                }
+            } catch (err) {
+                console.error("Register error:", err);
+                AppUtils.showBanner("Server error. Try again.", "error");
+            }
+        });
+    });
+</script>
+</body>
+</html>
