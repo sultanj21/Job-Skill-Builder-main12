@@ -6,6 +6,8 @@ const session = require("express-session");
 const bcrypt = require("bcryptjs");
 const { createClient } = require("@supabase/supabase-js");
 const path = require("path");
+const fs = require("fs");
+const multer = require("multer");
 
 const schedulerRoutes = require("./schedulerRoutes");
 const elevatorRoutes = require("./elevatorRoutes");
@@ -40,7 +42,7 @@ app.use(
     })
 );
 
-// Static files
+// Static files (public contains html, css, js, uploads, etc.)
 app.use(express.static(path.join(__dirname, "public")));
 
 // ---------- AUTH MIDDLEWARE ----------
@@ -50,6 +52,29 @@ function requireAuth(req, res, next) {
     }
     next();
 }
+
+// ---------- FILE UPLOAD CONFIG (PROFILE PIC + RESUME) ----------
+const uploadDir = path.join(__dirname, "public", "uploads");
+
+// Make sure uploads folder exists (important on Render)
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname) || "";
+        // Use different base names for images vs resumes
+        const base =
+            file.fieldname === "profilePic" ? "profile" : "resume";
+        cb(null, `${base}-${Date.now()}${ext}`);
+    },
+});
+
+const upload = multer({ storage });
 
 // ---------- API ROUTES (scheduler + elevator) ----------
 app.use("/api", schedulerRoutes);
@@ -103,7 +128,7 @@ app.get("/scheduler", requireAuth, (req, res) => {
     res.sendFile(path.join(__dirname, "public", "scheduler.html"));
 });
 
-// ---------- API: CURRENT USER (NO requireAuth HERE) ----------
+// ---------- API: CURRENT USER ----------
 app.get("/api/me", async (req, res) => {
     try {
         // If no session, just say not logged in in JSON
@@ -315,6 +340,91 @@ app.post("/logout", (req, res) => {
         res.json({ success: true, message: "Logged out." });
     });
 });
+
+// ---------- API: UPLOAD PROFILE PICTURE ----------
+app.post(
+    "/upload-profile-pic",
+    requireAuth,
+    upload.single("profilePic"),
+    async (req, res) => {
+        try {
+            if (!req.file) {
+                return res
+                    .status(400)
+                    .json({ success: false, message: "No file uploaded." });
+            }
+
+            const userId = req.session.user.id;
+            const filePath = `/uploads/${req.file.filename}`;
+
+            // Update user's profilepicpath in Supabase
+            const { data, error } = await supabase
+                .from("users")
+                .update({ profilepicpath: filePath })
+                .eq("id", userId)
+                .select()
+                .maybeSingle();
+
+            if (error) {
+                console.error("Supabase profile pic update error:", error);
+                return res.status(500).json({
+                    success: false,
+                    message: "Database error updating profile picture.",
+                });
+            }
+
+            return res.json({
+                success: true,
+                message: "Profile picture updated.",
+                path: filePath,
+            });
+        } catch (err) {
+            console.error("Upload profile picture error:", err);
+            return res.status(500).json({
+                success: false,
+                message: "Server error while uploading profile picture.",
+            });
+        }
+    }
+);
+
+// ---------- API: UPLOAD RESUME ----------
+app.post(
+    "/upload-resume",
+    requireAuth,
+    upload.single("resume"),
+    async (req, res) => {
+        try {
+            if (!req.file) {
+                return res
+                    .status(400)
+                    .json({ success: false, message: "No file uploaded." });
+            }
+
+            const filePath = `/uploads/${req.file.filename}`;
+
+            // Optional: if you later add a "resumepath" column, you can store it like this:
+            // const userId = req.session.user.id;
+            // await supabase
+            //   .from("users")
+            //   .update({ resumepath: filePath })
+            //   .eq("id", userId);
+
+            return res.json({
+                success: true,
+                message: "Resume uploaded.",
+                path: filePath,
+                filename: req.file.originalname,
+            });
+        } catch (err) {
+            console.error("Upload resume error:", err);
+            return res.status(500).json({
+                success: false,
+                message: "Server error while uploading resume.",
+            });
+        }
+    }
+);
 
 // ---------- START SERVER ----------
 const PORT = process.env.PORT || 3000;
